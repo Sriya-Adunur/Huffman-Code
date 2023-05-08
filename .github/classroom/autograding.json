@@ -1,0 +1,34 @@
+{
+  "tests": [
+    {
+      "name": "coverage huffman",
+      "setup": "echo -n > empty_file.txt; echo -n > empty_soln.txt; sudo -H pip3 install coverage >/dev/null 2>&1",
+      "run": "python -m coverage run huffman_tests.py 2>/dev/null; python -m coverage report -m --fail-under=100",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": null
+    },
+    {
+      "name": "type check huffman",
+      "setup": "sudo -H python3 -m pip install mypy==0.982 >/dev/null 2>&1",
+      "run": "echo \"mypy type check\"; mypy --disallow-untyped-defs huffman.py huffman_tests.py",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": null
+    },
+    {
+      "name": "huffman tests",
+      "setup": "",
+      "run": "python huffman_tests.py",
+      "input": "",
+      "output": "",
+      "comparison": "included",
+      "timeout": 10,
+      "points": null
+    }
+  ]
+}
