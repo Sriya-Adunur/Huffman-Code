@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from typing import List, Union, TypeAlias, Optional
 from typing import Optional
 
-#HTree: TypeAlias = Union[None, 'HuffmanNode']
-HTree: TypeAlias = Optional['HuffmanNode']
+HTree: TypeAlias = Union[None, 'HuffmanNode']
 
 @dataclass
 class HuffmanNode:
@@ -19,9 +18,9 @@ class HuffmanNode:
 
 def comes_before(a: HuffmanNode, b: HuffmanNode) -> bool:
     """Returns True if tree rooted at node a comes before tree rooted at node b, False otherwise"""
-    if a.freq < b.freq:
+    if a.freq < b.freq: #if the first node's frequency is less than the second node, wil return True
         return True
-    elif a.freq == b.freq:
+    elif a.freq == b.freq: #if frequency is equal, will return True if first node's ascii is less than the 2nd node
         if a.char_ascii < b. char_ascii:
             return True
         else:
@@ -34,19 +33,19 @@ def combine(a: HuffmanNode, b: HuffmanNode) -> HuffmanNode:
     The new node's frequency value will be the sum of the a and b frequencies
     The new node's char value will be the lower of the a and b char ASCII values"""
 
-    if comes_before(a, b):
+    if comes_before(a, b): #assigns left and right of new node based on smaller frequency
         left = a
         right = b
     else:
         left = b
         right = a
 
-    if a.char_ascii < b.char_ascii:
+    if a.char_ascii < b.char_ascii: #assigns ascii based on smaller ascii value of the 2 nodes
         ascii = a.char_ascii
     else:
         ascii = b.char_ascii
 
-    freq = a.freq + b.freq
+    freq = a.freq + b.freq #frequency is the sum of the frequency of both nodes
 
     node = HuffmanNode(ascii, freq, left, right)
     return node
@@ -61,9 +60,9 @@ def cnt_freq(filename: str) -> List:
     try:
         with open(filename, "r") as file:
             for line in file:
-                for char in line:
-                    freq_list[ord(char)] += 1
-    except FileNotFoundError:
+                for char in line: #traverses through every character in the file
+                    freq_list[ord(char)] += 1 #If ascii value of the character matches the index, increments the value by 1
+    except FileNotFoundError: #raises error if file is not found
         raise FileNotFoundError
     return freq_list
 
@@ -72,26 +71,26 @@ def create_huff_tree(char_freq: List) -> Optional[HuffmanNode]:
     Create a Huffman tree for characters with non-zero frequency
     Returns the root node of the Huffman tree. Returns None if all counts are zero."""
 
-    if sum(char_freq) == 0:
+    if sum(char_freq) == 0: #returns None if there are no characters in the file
         return None
     lst = []
 
     for i in range(len(char_freq)):
         if char_freq[i] != 0:
-            node = HuffmanNode(i, char_freq[i])
+            node = HuffmanNode(i, char_freq[i]) #creates a new node based on index (ascii value) and value (frequency)
             lst.append(node)
     lst.sort()
 
-    if len(lst) == 1:
+    if len(lst) == 1: #if there is only 1 unique character, returns the node at index 0
         return lst[0]
 
     else:
-        while len(lst) > 1:
+        while len(lst) > 1: #while the there is more than one item in the list, pops the first 2 items from list
             a = lst.pop(0)
             b = lst.pop(0)
-            lst.append(combine(a, b))
-            lst.sort()
-        return lst[0]
+            lst.append(combine(a, b)) #combines the first 2 nodes using combine method
+            lst.sort() #sorts the list
+        return lst[0] #returns the combined nodes => one single node
 
 def create_code(node: Optional[HuffmanNode]) -> List:
     """Returns an array (Python list) of Huffman codes. For each character, use the integer ASCII representation
@@ -105,11 +104,11 @@ def create_code(node: Optional[HuffmanNode]) -> List:
 
 
 def helper(node: Optional[HuffmanNode], code: str, codeLst: List) -> None:
-    if node.left is None and node.right is None:
+    if node.left is None and node.right is None: #if the node is a leaf node, attaches a code based on its position in the tree
         codeLst[node.char_ascii] = code
     else:
-        helper(node.left, code + "0", codeLst)
-        helper(node.right, code + "1", codeLst)
+        helper(node.left, code + "0", codeLst) #attaches 0 if moving left on tree
+        helper(node.right, code + "1", codeLst) #attaches 1 if moving right on tree
 
 
 def create_header(freqs: List) -> str:
@@ -120,9 +119,9 @@ def create_header(freqs: List) -> str:
     header = ""
     for i in range(len(freqs)):
         if freqs[i] != 0:
-            header = header + str(i) + " " + str(freqs[i]) + " "
+            header = header + str(i) + " " + str(freqs[i]) + " " #creates header with ascii value and frequency
 
-    return header[:-1]
+    return header[:-1] #returns header without the last space at the end
 
 
 def huffman_encode(in_file: str, out_file: str) -> None:
@@ -133,25 +132,25 @@ def huffman_encode(in_file: str, out_file: str) -> None:
     try:
         freq = cnt_freq(in_file)
     except FileNotFoundError:
-        raise FileNotFoundError
+        raise FileNotFoundError #raises error if file is not found
     hTree = create_huff_tree(freq)
     code = create_code(hTree)
     header = create_header(freq)
 
     if sum(freq) == 0:
-        # Handle empty file case
+        # Handles empty file case
         return
 
-    elif hTree.right is None and hTree.left is None:
+    elif hTree.right is None and hTree.left is None: # Handles single character, by only writing ascii value and frequency
         with open(out_file, "w") as file:
             file.write(str(hTree.char_ascii) + " " + str(hTree.freq))
     else:
         with open(out_file, "w") as file:
-            file.write(header)
-            file.write("\n")
+            file.write(header) #writes header for first line
+            file.write("\n") #new line
             text = ''
             with open(in_file, "r") as infile:
                 input_text = infile.read()
                 for char in input_text:
-                    text += code[ord(char)]
+                    text += code[ord(char)] #for every character, attaches code based on ascii value of the char stored in code list
                 file.write(text)
