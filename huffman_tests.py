@@ -66,6 +66,35 @@ class TestList(unittest.TestCase):
         # capture errors by comparing your encoded file with a *known* solution file
         self.assertTrue(compare_files("file1_out.txt", "file1_soln.txt"))
 
+    def tests_textfile(self) -> None:
+        huffman_encode("declaration.txt", "declarationout.txt")
+        # capture errors by comparing your encoded file with a *known* solution file
+        self.assertTrue(compare_files("declaration_soln.txt", "declarationout.txt"))
+
+    def tests2_textfile(self) -> None:
+        huffman_encode("file2.txt", "file2out.txt")
+        # capture errors by comparing your encoded file with a *known* solution file
+        self.assertTrue(compare_files("file2_soln.txt", "file2out.txt"))
+
+    def tests3_textfile(self) -> None:
+        huffman_encode("file5.txt", "file5out.txt")
+        # capture errors by comparing your encoded file with a *known* solution file
+        self.assertTrue(compare_files("file5_soln.txt", "file5out.txt"))
+
+    def test_error2_textfile(self) -> None:
+        with self.assertRaises(FileNotFoundError):  # uses context manager for checking exception
+            cnt_freq("file3.txt")
+        with self.assertRaises(FileNotFoundError):  # uses context manager for checking exception
+            huffman_encode("file3.txt", "file3_out")
+        lst = [0] * 256
+        self.assertEqual(create_huff_tree(lst), None)
+        lst = [4] + [0] * 255
+        self.assertEqual(create_huff_tree(lst), HuffmanNode(0, 4))
+        huffman_encode("file4.txt", "file4compare.txt")
+        self.assertTrue(compare_files("file4.txt", "file4compare.txt"))
+
+
+
 # Compare files - takes care of CR/LF, LF issues
 def compare_files(file1: str, file2: str) -> bool: # pragma: no cover
     match = True
