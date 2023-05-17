@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Union, TypeAlias, Optional
+from typing import Optional
 
 #HTree: TypeAlias = Union[None, 'HuffmanNode']
 HTree: TypeAlias = Optional['HuffmanNode']
@@ -12,7 +13,7 @@ class HuffmanNode:
     right: HTree = None     # Huffman tree (node) to the right
 
 
-    def __lt__(self, other: HTree) -> bool:
+    def __lt__(self, other: 'HuffmanNode') -> bool:
         return comes_before(self, other)
 
 
@@ -66,8 +67,7 @@ def cnt_freq(filename: str) -> List:
         raise FileNotFoundError
     return freq_list
 
-def create_huff_tree(char_freq: List) -> HTree:
-        #Optional[HuffmanNode]:
+def create_huff_tree(char_freq: List) -> Optional[HuffmanNode]:
     """Input is the list of frequencies (provided by cnt_freq()).
     Create a Huffman tree for characters with non-zero frequency
     Returns the root node of the Huffman tree. Returns None if all counts are zero."""
@@ -93,8 +93,7 @@ def create_huff_tree(char_freq: List) -> HTree:
             lst.sort()
         return lst[0]
 
-def create_code(node: HTree) -> List:
-    # Optional[HuffmanNode)
+def create_code(node: Optional[HuffmanNode]) -> List:
     """Returns an array (Python list) of Huffman codes. For each character, use the integer ASCII representation
     as the index into the array, with the resulting Huffman code for that character stored at that location.
     Characters that are unused should have an empty string at that location"""
@@ -105,8 +104,7 @@ def create_code(node: HTree) -> List:
     return codeLst
 
 
-def helper(node: HTree, code: str, codeLst: List) -> None:
-    #Optional[HuffmanNode]
+def helper(node: Optional[HuffmanNode], code: str, codeLst: List) -> None:
     if node.left is None and node.right is None:
         codeLst[node.char_ascii] = code
     else:
