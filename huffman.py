@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import List, Union, TypeAlias
+from typing import List, Union, TypeAlias, Optional
 
-HTree: TypeAlias = Union[None, 'HuffmanNode']
+#HTree: TypeAlias = Union[None, 'HuffmanNode']
+HTree: TypeAlias = Optional['HuffmanNode']
 
 @dataclass
 class HuffmanNode:
