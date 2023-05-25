@@ -114,7 +114,7 @@ def helper(node: Optional[HuffmanNode], code: str, codeLst: List) -> None:
 def create_header(freqs: List) -> str:
     """Input is the list of frequencies (provided by cnt_freq()).
     Creates and returns a header for the output file
-    Example: For the frequency list asscoaied with "aaabbbbcc, would return “97 3 98 4 99 2” """
+    Example: For the frequency list associated with "aaabbbbcc, would return “97 3 98 4 99 2” """
 
     header = ""
     for i in range(len(freqs)):
@@ -154,3 +154,39 @@ def huffman_encode(in_file: str, out_file: str) -> None:
                 for char in input_text:
                     text += code[ord(char)] #for every character, attaches code based on ascii value of the char stored in code list
                 file.write(text)
+
+def parse_header(header_string: str) -> List:
+    lst = [0] * 256
+    freq = header_string.split()
+    for index in range(0, len(freq), 2): #frequency for information stored in the header
+        lst[int(freq[index])] = int(freq[index + 1])
+    return lst
+
+def huffman_decode(encoded_file, decode_file) -> None:
+    try:
+        efile = open(encoded_file, "r")
+    except:
+        raise FileNotFoundError
+    first = efile.readline()
+    sec = efile.readline()
+    freq = parse_header(first)
+    tree = create_huff_tree(freq)
+    pos = tree
+    with open(decode_file, "w") as dfile:
+        for num in sec:
+            if num == "0": #decoding the file by identifying if the number is 0 or 1
+                pos = pos.left
+                if pos.left is None and pos.right is None:
+                    dfile.write(chr(pos.char_ascii))
+                    pos = tree
+            elif num == "1":
+                pos = pos.right
+                if pos.left is None and pos.right is None:
+                    dfile.write(chr(pos.char_ascii))
+                    pos = tree
+
+
+
+
+
+
